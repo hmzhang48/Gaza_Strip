@@ -16534,7 +16534,7 @@
       plugins: {
         title: {
           display: true,
-          text: "Unemployment Rate by Country (Region)"
+          text: "Unemployment Rate by Country / Region (2022)"
         },
         subtitle: {
           display: true,
@@ -16595,7 +16595,7 @@
       plugins: {
         title: {
           display: true,
-          text: "Population by Age in Gaza"
+          text: "Population by Age in Gaza (2022)"
         },
         subtitle: {
           display: true,
