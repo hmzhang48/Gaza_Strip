@@ -4,7 +4,9 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="./index.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/reveal.js@5.0.4/dist/reveal.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/reveal.js@5.0.4/dist/theme/simple.css" rel="stylesheet">
     <link rel="shortcut icon" type="image/x-icon" href="./favicon.ico">
     <title>The Gaza Strip</title>
   </head>
@@ -212,7 +214,385 @@
         </section>
       </div>
     </div>
-    <script src="./index.js"></script>
+
+    <script type="module">
+      // Chart Date
+      const blockadeData1 = [
+        { year: "Before 2000", count: 500 },
+        { year: "2004", count: 43.4 },
+        { year: "2005", count: 31.5 },
+        { year: "2006", count: 13.5 },
+        { year: "2007 (1st Half)", count: 12.6 },
+        { year: "2007 (2nd Half)", count: 1.9 },
+        { year: "2008", count: 2.2 },
+        { year: "2009", count: 2.4 },
+        { year: "2010", count: 3.3 },
+        { year: "2011", count: 4.4 },
+        { year: "2012", count: 4.9 },
+        { year: "2013", count: 5.8 },
+        { year: "2014", count: 6 },
+        { year: "2015", count: 15.3 },
+        { year: "2016", count: 13.2 },
+        { year: "2017", count: 6.9 },
+        { year: "2018", count: 9.5 },
+        { year: "2019", count: 16 },
+        { year: "2020", count: 5 },
+        { year: "2021", count: 7.5 },
+        { year: "2022 (Jan-May)", count: 27.7 }
+      ];
+      const blockadeData2 = [
+        { year: "Before 2000", count: null },
+        { year: "2004", count: null },
+        { year: "2005", count: null },
+        { year: "2006", count: 25.8 },
+        { year: "2007 (1st Half)", count: 15.7 },
+        { year: "2007 (2nd Half)", count: 0.4 },
+        { year: "2008", count: 1.8 },
+        { year: "2009", count: 5.6 },
+        { year: "2010", count: 13.9 },
+        { year: "2011", count: 21.2 },
+        { year: "2012", count: 35 },
+        { year: "2013", count: 25.2 },
+        { year: "2014", count: 8.1 },
+        { year: "2015", count: 2.4 },
+        { year: "2016", count: 3.5 },
+        { year: "2017", count: 2.9 },
+        { year: "2018", count: 8.2 },
+        { year: "2019", count: 12.1 },
+        { year: "2020", count: 4.3 },
+        { year: "2021", count: 15.1 },
+        { year: "2022 (Jan-May)", count: 19.1 }
+      ];
+      const unemploymentData1 = [
+        { country: "Gaza Strip", count: 45.3 },
+        { country: "South Africa", count: 29.8 },
+        { country: "West Bank", count: 13.1 },
+        { country: "Syria", count: 9.6 },
+        { country: "Egypt", count: 7 },
+        { country: "World", count: 5.8 },
+        { country: "Israel", count: 3.5 }
+      ];
+      const unemploymentData2 = [
+        { country: "Gaza Strip", count: 73.9 },
+        { country: "South Africa", count: 51.5 },
+        { country: "West Bank", count: 28.6 },
+        { country: "Syria", count: 22.1 },
+        { country: "Egypt", count: 17.1 },
+        { country: "World", count: 15.6 },
+        { country: "Israel", count: 6 }
+      ];
+      const fertilityData = [
+        { age: "0 - 9", count: 557558 },
+        { age: "10 - 19", count: 530135 },
+        { age: "20 - 29", count: 391528 },
+        { age: "30 - 39", count: 262589 },
+        { age: "40 - 49", count: 161035 },
+        { age: "50 - 59", count: 101326 },
+        { age: "60+", count: 94218 }
+      ];
+      const deathData1 = [
+        { age: "Children", count: 4100 },
+        { age: "Adults", count: 5900 }
+      ];
+      const deathData2 = [
+        { age: "Children", count: 560 },
+        { age: "Adults", count: 9440 }
+      ];
+
+      // Chart Config
+      const CHART_COLORS = {
+        red: "rgb(255, 99, 132)",
+        orange: "rgb(255, 159, 64)",
+        yellow: "rgb(255, 205, 86)",
+        green: "rgb(75, 192, 192)",
+        blue: "rgb(54, 162, 235)",
+        purple: "rgb(153, 102, 255)",
+        grey: "rgb(201, 203, 207)"
+      };
+      const blockadeConfig = {
+        type: "line",
+        options: {
+          animation: {
+            delay: 500
+          },
+          interaction: {
+            mode: "index",
+            intersect: false
+          },
+          plugins: {
+            title: {
+              display: true,
+              text: "Movement of People in Gaza Through Border Crossing"
+            },
+            subtitle: {
+              display: true,
+              position: "bottom",
+              align: "end",
+              text: "Data sources: UNOCHA"
+            },
+            tooltip: {
+              enabled: true,
+              titleMarginBottom: 10,
+              bodySpacing: 10,
+              footerMarginTop: 10,
+              padding: 10,
+              boxPadding: 5,
+              callbacks: {
+                label: (item) => {
+                  return "Monthly Averages : " + item.formattedValue + "k";
+                },
+                beforeFooter: (items) => {
+                  let content = "";
+                  items.forEach((item) => {
+                    if (item.label === "Before 2000") {
+                      content = "Prior to the Second Intifada";
+                    }
+                    if (item.label === "2007 (2nd Half)") {
+                      content = "Israel started blocking Gaza in June";
+                    }
+                    if (item.label === "2014") {
+                      content = "Egypt closed Rafah crossing";
+                    }
+                  });
+                  return content;
+                }
+              }
+            }
+          },
+          scales: {
+            y: {
+              display: true,
+              type: "logarithmic",
+              ticks: {
+                callback: (value, index2) => {
+                  return value + "k";
+                }
+              }
+            }
+          }
+        },
+        data: {
+          labels: blockadeData1.map((row) => row.year),
+          datasets: [
+            {
+              label: "Exit of People Through Erez Crossing (Israel)",
+              data: blockadeData1.map((row) => row.count)
+            },
+            {
+              label: "Exits and Entries of People Through Rafah Crossing (Egypt)",
+              data: blockadeData2.map((row) => row.count)
+            }
+          ]
+        }
+      };
+      const unemploymentConfig = {
+        type: "bar",
+        options: {
+          animation: {
+            delay: 500
+          },
+          interaction: {
+            mode: "nearest"
+          },
+          indexAxis: "y",
+          plugins: {
+            title: {
+              display: true,
+              text: "Unemployment Rate by Country / Region (2022)"
+            },
+            subtitle: {
+              display: true,
+              position: "bottom",
+              align: "end",
+              text: "Data sources: World Bank, PCBS"
+            },
+            tooltip: {
+              enabled: true,
+              titleMarginBottom: 10,
+              bodySpacing: 10,
+              footerMarginTop: 10,
+              padding: 10,
+              boxPadding: 5,
+              callbacks: {
+                label: (item) => {
+                  return item.dataset.label + " : " + item.formattedValue + "%";
+                }
+              }
+            }
+          },
+          scales: {
+            x: {
+              display: true,
+              ticks: {
+                callback: (value, index2) => {
+                  return value + "%";
+                }
+              }
+            }
+          }
+        },
+        data: {
+          labels: unemploymentData1.map((row) => row.country),
+          datasets: [
+            {
+              axis: "y",
+              label: "Unemployment Rate",
+              data: unemploymentData1.map((row) => row.count)
+            },
+            {
+              axis: "y",
+              label: "Youth Unemployment Rate",
+              data: unemploymentData2.map((row) => row.count)
+            }
+          ]
+        }
+      };
+      const fertilityConfig = {
+        type: "pie",
+        options: {
+          animation: {
+            delay: 500
+          },
+          interaction: {
+            mode: "nearest"
+          },
+          plugins: {
+            title: {
+              display: true,
+              text: "Population by Age in Gaza (2022)"
+            },
+            subtitle: {
+              display: true,
+              position: "bottom",
+              align: "end",
+              text: "Data sources: US Census Bureau"
+            },
+            tooltip: {
+              enabled: true,
+              titleMarginBottom: 10,
+              bodySpacing: 10,
+              footerMarginTop: 10,
+              padding: 10,
+              boxPadding: 5,
+              callbacks: {
+                label: (item) => {
+                  return `${item.formattedValue} (${(item.raw / 2098389 * 100).toFixed(2)}%)`;
+                }
+              }
+            }
+          }
+        },
+        data: {
+          labels: fertilityData.map((row) => row.age),
+          datasets: [
+            {
+              label: "Population by Age",
+              data: fertilityData.map((row) => row.count),
+              hoverOffset: 10
+            }
+          ]
+        }
+      };
+      const deathConfig = {
+        type: "doughnut",
+        options: {
+          animation: {
+            delay: 500
+          },
+          interaction: {
+            mode: "nearest"
+          },
+          plugins: {
+            title: {
+              display: true,
+              text: "Civilian Death Toll in Wars (Gaza and Ukraine)"
+            },
+            subtitle: {
+              display: true,
+              position: "bottom",
+              align: "end",
+              text: "Data sources: Gaza Ministry of Health, UNHRMM"
+            },
+            tooltip: {
+              enabled: true,
+              titleMarginBottom: 10,
+              bodySpacing: 10,
+              footerMarginTop: 10,
+              padding: 10,
+              boxPadding: 5,
+              callbacks: {
+                title: (items) => {
+                  let title = [];
+                  items.forEach((item) => {
+                    title.push(`${item.label} ${item.dataset.label}`);
+                  });
+                  return title;
+                },
+                label: (item) => {
+                  return `${item.formattedValue} (${(item.raw / 1e4 * 100).toFixed(2)}%)`;
+                }
+              }
+            }
+          }
+        },
+        data: {
+          labels: deathData1.map((row) => row.age),
+          datasets: [
+            {
+              label: "Death Toll in Gaza (2022.11.6)",
+              data: deathData1.map((row) => row.count),
+              backgroundColor: [CHART_COLORS.red, CHART_COLORS.blue]
+            },
+            {
+              label: "Death Toll in Ukraine (2022.11.21)",
+              data: deathData2.map((row) => row.count),
+              backgroundColor: [CHART_COLORS.red, CHART_COLORS.blue]
+            }
+          ]
+        }
+      };
+
+      // Reveal Config
+      import Reveal from 'https://cdn.jsdelivr.net/npm/reveal.js@5.0.4/+esm'
+      const reveal = new Reveal();
+      let blockadeChart;
+      let unemploymentChart;
+      let fertilityChart;
+      let deathChart;
+      reveal.on("slidechanged", (event) => {
+        if (event.indexh === 4 && !blockadeChart) {
+          blockadeChart = new Chart(
+            document.getElementById("blockade"),
+            blockadeConfig
+          );
+        }
+        if (event.indexh === 5 && !unemploymentChart) {
+          unemploymentChart = new Chart(
+            document.getElementById("unemployment"),
+            unemploymentConfig
+          );
+        }
+        if (event.indexh === 9 && !fertilityChart) {
+          fertilityChart = new Chart(
+            document.getElementById("fertility"),
+            fertilityConfig
+          );
+        }
+        if (event.indexh === 11 && !deathChart) {
+          deathChart = new Chart(
+            document.getElementById("death"),
+            deathConfig
+          );
+        }
+      });
+      reveal.initialize({
+        view: "scroll",
+        scrollProgress: true,
+        center: false,
+        width: "100%",
+        height: "100%"
+      });
+    </script>
   </body>
 
 </html>
